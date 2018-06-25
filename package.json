@@ -1,6 +1,6 @@
 {
   "name": "tiny-async-pool",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Run multiple promise-returning & async functions with limited concurrency using native ES6/ES7",
   "main": "dist/node.js",
   "scripts": {
