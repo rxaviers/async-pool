@@ -11,9 +11,8 @@ The goal of this library is to use native async functions (if ES7 is available) 
 `asyncPool` runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It resolves when all the promises completes. It calls the iterator function as soon as possible (under concurrency limit). For example:
 
 ```js
-await asyncPool(2, [1000, 5000, 3000, 2000], i => {
-  setTimeout(() => resolve(i), i)
-});
+const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i));
+await asyncPool(2, [1000, 5000, 3000, 2000], timeout);
 // Call iterator (i = 1000)
 // Call iterator (i = 5000)
 // Pool limit of 2 reached, wait for the quicker one to complete...
