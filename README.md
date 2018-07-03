@@ -30,7 +30,7 @@ await asyncPool(2, [1000, 5000, 3000, 2000], timeout);
 ## Usage
 
 ```
-$ npm install rxaviers/async-pool
+$ npm install tiny-async-pool
 ```
 
 ```js
