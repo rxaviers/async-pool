@@ -34,7 +34,7 @@ $ npm install rxaviers/async-pool
 ```
 
 ```js
-import asyncPool from "async-pool";
+import asyncPool from "tiny-async-pool";
 ```
 
 ### ES7 async
