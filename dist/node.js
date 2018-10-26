@@ -7,4 +7,5 @@ if (semver.satisfies(process.version, "<8")) {
   exports = require("../lib/es7");
 }
 
+module.exports = exports;
 module.exports.default = exports;
