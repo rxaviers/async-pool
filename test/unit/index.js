@@ -26,14 +26,6 @@ describe("asyncPool", function() {
             "Parameter `iteratorFn` must be a function"
           );
         });
-
-        it("", function() {
-          return expect(
-            asyncPool(2, [], () => {})
-          ).to.eventually.be.rejectedWith(
-            "Parameter `array` must have at least one item"
-          );
-        });
       });
 
       it("should work", async function() {
