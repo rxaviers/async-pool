@@ -9,7 +9,7 @@
     "lib"
   ],
   "scripts": {
-    "prettier": "prettier --write '{src,test}/**/*.{js}'",
+    "prettier": "prettier --write '{lib,test}/**/*.js'",
     "test": "eslint src && NODE_ENV=development mocha"
   },
   "repository": {

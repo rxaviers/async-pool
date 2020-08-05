@@ -26,17 +26,9 @@ describe("asyncPool", function() {
             "Parameter `iteratorFn` must be a function"
           );
         });
-
-        it("", function() {
-          return expect(
-            asyncPool(2, [], () => {})
-          ).to.eventually.be.rejectedWith(
-            "Parameter `array` must have at least one item"
-          );
-        });
       });
 
-      it("should work", async function() {
+      it("only runs as many promises in parallel as given by the pool limit", async function() {
         const results = [];
         const timeout = i =>
           new Promise(resolve =>
@@ -47,6 +39,55 @@ describe("asyncPool", function() {
           );
         await asyncPool(2, [100, 500, 300, 200], timeout);
         expect(results).to.deep.equal([100, 300, 500, 200]);
+      });
+
+      it("runs all promises in parallel when the pool is bigger than needed", async function() {
+        const results = [];
+        const timeout = i =>
+          new Promise(resolve =>
+            setTimeout(() => {
+              results.push(i);
+              resolve();
+            }, i)
+          );
+        await asyncPool(5, [100, 500, 300, 200], timeout);
+        expect(results).to.deep.equal([100, 200, 300, 500]);
+      });
+
+      it("rejects on error (but does not leave unhandled rejections)", async function() {
+        const timeout = _ => Promise.reject();
+        return expect(asyncPool(5, [100, 500, 300, 200], timeout)).to.be.rejected;
+        // check console - no UnhandledPromiseRejectionWarning should appear
+      });
+
+      it("rejects as soon as first promise rejects", async function() {
+        const startedTasks = [];
+        const finishedTasks = [];
+        const timeout = i => {
+          startedTasks.push(i);
+          return new Promise((resolve, reject) =>
+              setTimeout(() => {
+                if (i === 300) {
+                  reject(new Error("Oops"));
+                } else {
+                  finishedTasks.push(i);
+                  resolve();
+                }
+              }, i)
+          );
+        };
+
+        const testResult = await expect(asyncPool(2, [100, 500, 300, 200], timeout)).to.be.rejected;
+
+        expect(startedTasks).to.deep.equal([100, 500, 300]);
+        expect(finishedTasks).to.deep.equal([100]);
+
+        // tasks started before the error will continue, though - just wait a bit
+        await new Promise(resolve => setTimeout(() => resolve(), 500));
+        expect(startedTasks).to.deep.equal([100, 500, 300]);
+        expect(finishedTasks).to.deep.equal([100, 500]);
+
+        return testResult;
       });
     });
   }
