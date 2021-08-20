@@ -83,7 +83,7 @@ return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {
 
 ## API
 
-### `asyncPool(poolLimit, array, iteratorFn)`
+### `asyncPool(poolLimit, array, iteratorFn,retryLimit=0)`
 
 Runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It resolves when all the promises completes. It calls the iterator function as soon as possible (under concurrency limit).
 
@@ -99,6 +99,8 @@ Input array.
 
 Iterator function that takes two arguments (array item and the array itself). The iterator function should either return a promise or be an async function.
 
+#### retryLimit
+ Try again when one fails .The default number of retries is 0
 ## License
 
 MIT © [Rafael Xavier de Souza](http://rafael.xavier.blog.br)
