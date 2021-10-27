@@ -71,7 +71,7 @@ Input array.
 
 #### iteratorFn
 
-Iterator function that takes two arguments (array item and the array itself). The iterator function should either return a promise or be an async function.
+Iterator function that takes two arguments (array item, array index and the array itself). The iterator function should either return a promise or be an async function.
 
 ## License
 
