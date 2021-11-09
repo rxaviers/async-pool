@@ -49,7 +49,9 @@ Note: Something really nice will be possible soon https://github.com/tc39/propos
 ### ES6 Promise
 
 ```js
-const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i));
+const timeout = (k, i) => new Promise(resolve => {
+  setTimeout(() => resolve([k, i]), k);
+});
 return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {
   ...
 });
@@ -71,7 +73,7 @@ Input array.
 
 #### iteratorFn
 
-Iterator function that takes two arguments (array item, array index and the array itself). The iterator function should either return a promise or be an async function.
+Iterator function that takes three arguments (element value, element index, and the array object being traversed). The iterator function should either return a promise or be an async function.
 
 ## License
 
