@@ -57,7 +57,7 @@ return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {
 
 ## API
 
-### `asyncPool(poolLimit, array, iteratorFn)`
+### `asyncPool(poolLimit, iterable, iteratorFn)`
 
 Runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It resolves when all the promises completes. It calls the iterator function as soon as possible (under concurrency limit).
 
@@ -65,13 +65,13 @@ Runs multiple promise-returning & async functions in a limited concurrency pool.
 
 The pool limit number (>= 1).
 
-#### array
+#### iterable
 
-Input array.
+An input [iterable object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol), such as [`String`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), [`TypedArray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray), [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map), and [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set).
 
 #### iteratorFn
 
-Iterator function that takes two arguments (array item and the array itself). The iterator function should either return a promise or be an async function.
+Iterator function that takes two arguments: the value of each iteration and the iterable object itself. The iterator function should either return a promise or be an async function.
 
 ## License
 
