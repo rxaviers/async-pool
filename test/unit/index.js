@@ -8,26 +8,6 @@ describe("asyncPool", function() {
     ["ES7 support", es7AsyncPool]
   ]) {
     describe(title, function() {
-      describe('should assert parameters when NODE_ENV === "development"', function() {
-        it("", function() {
-          return expect(asyncPool()).to.eventually.be.rejectedWith(
-            "Parameter `poolLimit` must be a number"
-          );
-        });
-
-        it("", function() {
-          return expect(asyncPool(2)).to.eventually.be.rejectedWith(
-            "Parameter `array` must be a array"
-          );
-        });
-
-        it("", function() {
-          return expect(asyncPool(2, [1])).to.eventually.be.rejectedWith(
-            "Parameter `iteratorFn` must be a function"
-          );
-        });
-      });
-
       it("only runs as many promises in parallel as given by the pool limit", async function() {
         const results = [];
         const timeout = i =>
@@ -54,9 +34,23 @@ describe("asyncPool", function() {
         expect(results).to.deep.equal([100, 200, 300, 500]);
       });
 
-      it("rejects on error (but does not leave unhandled rejections)", async function() {
+      it("rejects on error (but does not leave unhandled rejections) (1/2)", async function() {
         const timeout = _ => Promise.reject();
-        return expect(asyncPool(5, [100, 500, 300, 200], timeout)).to.be.rejected;
+        return expect(
+          asyncPool(5, [100, 500, 300, 200], timeout)
+        ).to.be.rejected;
+        // check console - no UnhandledPromiseRejectionWarning should appear
+      });
+
+      it("rejects on error (but does not leave unhandled rejections) (2/2)", async function() {
+        return expect(
+          asyncPool(
+            2,
+            [0, 1, 2],
+            (i, a) =>
+              i < a.length - 1 ? Promise.resolve(i) : Promise.reject(i)
+          )
+        ).to.be.rejected;
         // check console - no UnhandledPromiseRejectionWarning should appear
       });
 
@@ -66,18 +60,20 @@ describe("asyncPool", function() {
         const timeout = i => {
           startedTasks.push(i);
           return new Promise((resolve, reject) =>
-              setTimeout(() => {
-                if (i === 300) {
-                  reject(new Error("Oops"));
-                } else {
-                  finishedTasks.push(i);
-                  resolve();
-                }
-              }, i)
+            setTimeout(() => {
+              if (i === 300) {
+                reject(new Error("Oops"));
+              } else {
+                finishedTasks.push(i);
+                resolve();
+              }
+            }, i)
           );
         };
 
-        const testResult = await expect(asyncPool(2, [100, 500, 300, 200], timeout)).to.be.rejected;
+        const testResult = await expect(
+          asyncPool(2, [100, 500, 300, 200], timeout)
+        ).to.be.rejected;
 
         expect(startedTasks).to.deep.equal([100, 500, 300]);
         expect(finishedTasks).to.deep.equal([100]);
