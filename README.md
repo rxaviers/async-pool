@@ -2,29 +2,35 @@
 
 ## Why?
 
-Existing solutions also re-implement Promise 😩...
+The goal of this library is to use native async iterator (ES9), native async functions and native Promise to implement the concurrency behavior (look our source code).
 
-The goal of this library is to use native async functions (if ES7 is available) and/or native Promise (ES6) including `Promise.race()` and `Promise.all()` to implement the concurrency behavior (look our source code).
+If you need ES6 as baseline, please use our version [1.x](https://github.com/rxaviers/async-pool/tree/1.x).
 
 ## What?
 
 `asyncPool` runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It resolves when all the promises completes. It calls the iterator function as soon as possible (under concurrency limit). For example:
 
 ```js
-const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i));
-await asyncPool(2, [1000, 5000, 3000, 2000], timeout);
-// Call iterator (i = 1000)
-// Call iterator (i = 5000)
-// Pool limit of 2 reached, wait for the quicker one to complete...
+const timeout = ms => new Promise(resolve => setTimeout(() => resolve(ms), ms));
+
+for await (const ms of asyncPool(2, [1000, 5000, 3000, 2000], timeout)) {
+  console.log(ms);
+}
+// Call iterator timeout(1000)
+// Call iterator timeout(5000)
+// Concurrency limit of 2 reached, wait for the quicker one to complete...
 // 1000 finishes
-// Call iterator (i = 3000)
-// Pool limit of 2 reached, wait for the quicker one to complete...
+// for await...of outputs "1000"
+// Call iterator timeout(3000)
+// Concurrency limit of 2 reached, wait for the quicker one to complete...
 // 3000 finishes
-// Call iterator (i = 2000)
+// for await...of outputs "3000"
+// Call iterator timeout(2000)
 // Itaration is complete, wait until running ones complete...
 // 5000 finishes
+// for await...of outputs "5000"
 // 2000 finishes
-// Resolves, results are passed in given array order `[1000, 5000, 3000, 2000]`.
+// for await...of outputs "2000"
 ```
 
 ## Usage
@@ -37,33 +43,35 @@ $ npm install tiny-async-pool
 import asyncPool from "tiny-async-pool";
 ```
 
-### ES7 async
+### ES9 for await...of
 
 ```js
-const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i));
-const results = await asyncPool(2, [1000, 5000, 3000, 2000], timeout);
+for await (const value of asyncPool(concurrency, iterable, iteratorFn)) {
+  ...
+}
 ```
 
-Note: Something really nice will be possible soon https://github.com/tc39/proposal-async-iteration
+## Migrating from 1.x
 
-### ES6 Promise
+The main difference: [1.x API](https://github.com/rxaviers/async-pool/tree/1.x) waits until all of the promises completes, then all results are returned (example below). The new API (thanks to [async iteration](https://github.com/tc39/proposal-async-iteration)) let each result be returned as soon as it completes (example above).
 
 ```js
-const timeout = i => new Promise(resolve => setTimeout(() => resolve(i), i));
-return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {
-  ...
-});
+// ES7 API available on our previous 1.x version
+const results = await asyncPool(concurrency, iterable, iteratorFn);
+
+// ES6 API available on our previous 1.x version
+return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {...});
 ```
 
 ## API
 
-### `asyncPool(poolLimit, iterable, iteratorFn)`
+### `asyncPool(concurrency, iterable, iteratorFn)`
 
-Runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It resolves when all the promises completes. It calls the iterator function as soon as possible (under concurrency limit).
+Runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It calls the iterator function as soon as possible (under concurrency limit). It returns an async iterator that yields as soon as a promise completes (under concurrency limit). 
 
-#### poolLimit
+#### concurrency
 
-The pool limit number (>= 1).
+The concurrency limit number (>= 1).
 
 #### iterable
 
