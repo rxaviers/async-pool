@@ -1,11 +1,10 @@
 {
   "name": "tiny-async-pool",
   "version": "1.3.0",
-  "description": "Run multiple promise-returning & async functions with limited concurrency using native ES6/ES7",
-  "main": "dist/node.js",
+  "description": "Run multiple promise-returning & async functions with limited concurrency using native ES9",
+  "main": "lib/es9.js",
   "files": [
     "LICENSE-MIT",
-    "dist",
     "lib"
   ],
   "scripts": {
@@ -21,8 +20,10 @@
     "concurrency",
     "promise",
     "async",
-    "es6",
-    "es7"
+    "async iterator",
+    "async iteration",
+    "async generator",
+    "es9"
   ],
   "author": "Rafael Xavier de Souza",
   "license": "MIT",
@@ -35,7 +36,5 @@
     "mocha": "^5.0.0",
     "prettier": "^1.10.2"
   },
-  "dependencies": {
-    "semver": "^5.5.0"
-  }
+  "dependencies": {}
 }
