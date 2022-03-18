@@ -8,7 +8,7 @@ If you need ES6 as baseline, please use our version [1.x](https://github.com/rxa
 
 ## What?
 
-`asyncPool` runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It resolves when all the promises completes. It calls the iterator function as soon as possible (under concurrency limit). For example:
+`asyncPool` runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It calls the iterator function as soon as possible (under concurrency limit). It returns an async iterator that yields as soon as a promise completes (under concurrency limit). For example:
 
 ```js
 const timeout = ms => new Promise(resolve => setTimeout(() => resolve(ms), ms));
