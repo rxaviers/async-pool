@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "prettier": "prettier --write '{lib,test}/**/*.js'",
-    "test": "eslint src && NODE_ENV=development mocha"
+    "test": "eslint lib && NODE_ENV=development mocha"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
   "author": "Rafael Xavier de Souza",
   "license": "MIT",
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "eslint": "^4.17.0",
