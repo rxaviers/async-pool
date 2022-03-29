@@ -55,24 +55,22 @@ for await (const value of asyncPool(concurrency, iterable, iteratorFn)) {
 
 The main difference: [1.x API](https://github.com/rxaviers/async-pool/tree/1.x) waits until all of the promises completes, then all results are returned (example below). The new API (thanks to [async iteration](https://github.com/tc39/proposal-async-iteration)) let each result be returned as soon as it completes (example above).
 
-```js
-// ES7 API available on our previous 1.x version
-const results = await asyncPool(concurrency, iterable, iteratorFn);
-
-// ES6 API available on our previous 1.x version
-return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {...});
-```
-
 You may prefer to keep the 1.x style syntax, instead of the `for await` iteration method in 2.x. Define a function like below to wrap `asyncPool`, and this function will allow you to upgrade to 2.x without having to heavily modify your existing code.
 
 ```js
-async function asyncPoolAll(poolLimit, array, iteratorFn) {
+async function asyncPoolAll(...args) {
   const results = [];
-  for await (const result of asyncPool(poolLimit, array, iteratorFn)) {
+  for await (const result of asyncPool(...args)) {
     results.push(result);
   }
   return results;
 }
+
+// ES7 API style available on our previous 1.x version
+const results = await asyncPoolAll(concurrency, iterable, iteratorFn);
+
+// ES6 API style available on our previous 1.x version
+return asyncPoolAll(2, [1000, 5000, 3000, 2000], timeout).then(results => {...});
 ```
 
 ## API
