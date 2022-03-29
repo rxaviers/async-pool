@@ -65,17 +65,13 @@ return asyncPool(2, [1000, 5000, 3000, 2000], timeout).then(results => {...});
 
 You may prefer to keep the 1.x style syntax, instead of the `for await` iteration method in 2.x. Define a function like below to wrap `asyncPool`, and this function will allow you to upgrade to 2.x without having to heavily modify your existing code.
 
-```
-export async function asyncPoolAll<IN, OUT>(
-	poolLimit: number,
-	array: readonly IN[],
-	iteratorFn: (generator: IN) => Promise<OUT>
-): Promise<OUT[]> {
-	const results: OUT[] = [];
-	for await (const result of asyncPool(poolLimit, array, iteratorFn)) {
-		results.push(result);
-	}
-	return results;
+```js
+async function asyncPoolAll(poolLimit, array, iteratorFn) {
+  const results = [];
+  for await (const result of asyncPool(poolLimit, array, iteratorFn)) {
+    results.push(result);
+  }
+  return results;
 }
 ```
 
@@ -83,7 +79,7 @@ export async function asyncPoolAll<IN, OUT>(
 
 ### `asyncPool(concurrency, iterable, iteratorFn)`
 
-Runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It calls the iterator function as soon as possible (under concurrency limit). It returns an async iterator that yields as soon as a promise completes (under concurrency limit). 
+Runs multiple promise-returning & async functions in a limited concurrency pool. It rejects immediately as soon as one of the promises rejects. It calls the iterator function as soon as possible (under concurrency limit). It returns an async iterator that yields as soon as a promise completes (under concurrency limit).
 
 #### concurrency
 
