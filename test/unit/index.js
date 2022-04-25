@@ -25,6 +25,14 @@ describe("asyncPool", function() {
     expect((await gen.next()).value).to.equal(50);
   });
 
+  it("runs all promises even if they are fullfilled within the same tick (#42)", async function() {
+    const gen = asyncPool(2, [10, 50, 30, 20], x => Promise.resolve(x));
+    expect((await gen.next()).value).to.equal(10);
+    expect((await gen.next()).value).to.equal(50);
+    expect((await gen.next()).value).to.equal(30);
+    expect((await gen.next()).value).to.equal(20);
+  });
+
   it("runs all promises even if they are not promises", async function() {
     const gen = asyncPool(2, [10, 50, 30, 20], x => x);
     expect((await gen.next()).value).to.equal(10);
