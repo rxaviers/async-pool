@@ -25,6 +25,14 @@ describe("asyncPool", function() {
     expect((await gen.next()).value).to.equal(50);
   });
 
+  it("runs all promises even if they are not promises", async function() {
+    const gen = asyncPool(2, [10, 50, 30, 20], x => x);
+    expect((await gen.next()).value).to.equal(10);
+    expect((await gen.next()).value).to.equal(50);
+    expect((await gen.next()).value).to.equal(30);
+    expect((await gen.next()).value).to.equal(20);
+  });
+
   it("rejects on error (but does not leave unhandled rejections) (1/2)", async function() {
     const timeout = () => Promise.reject();
     const gen = asyncPool(5, [10, 50, 30, 20], timeout);
