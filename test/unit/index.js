@@ -26,9 +26,9 @@ describe("asyncPool", function() {
   });
 
   it("rejects on error (but does not leave unhandled rejections) (1/2)", async function() {
-    const timeout = _ => Promise.reject();
+    const timeout = () => Promise.reject();
     const gen = asyncPool(5, [10, 50, 30, 20], timeout);
-    expect(gen.next()).to.be.rejected;
+    await expect(gen.next()).to.be.rejected;
     // check console - no UnhandledPromiseRejectionWarning should appear
   });
 
@@ -39,7 +39,8 @@ describe("asyncPool", function() {
       (i, a) => (i < a.length - 1 ? Promise.resolve(i) : Promise.reject(i))
     );
     expect((await gen.next()).value).to.equal(0);
-    expect(gen.next()).to.be.rejected;
+    expect((await gen.next()).value).to.equal(1);
+    await expect(gen.next()).to.be.rejected;
     // check console - no UnhandledPromiseRejectionWarning should appear
   });
 
@@ -64,7 +65,7 @@ describe("asyncPool", function() {
     const step1 = gen.next();
     const step2 = gen.next();
     const step3 = gen.next();
-    expect(step1).to.be.fulfilled;
+    await expect(step1).to.be.fulfilled;
     await expect(step2).to.be.rejected;
     expect(startedTasks).to.deep.equal([10, 50, 30]);
     expect(finishedTasks).to.deep.equal([10]);
