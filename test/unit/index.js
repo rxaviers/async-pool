@@ -35,7 +35,7 @@ describe("asyncPool", function() {
       });
 
       it("rejects on error (but does not leave unhandled rejections) (1/2)", async function() {
-        const timeout = _ => Promise.reject();
+        const timeout = () => Promise.reject();
         return expect(
           asyncPool(5, [100, 500, 300, 200], timeout)
         ).to.be.rejected;
@@ -52,6 +52,11 @@ describe("asyncPool", function() {
           )
         ).to.be.rejected;
         // check console - no UnhandledPromiseRejectionWarning should appear
+      });
+
+      it("runs all promises even if they are not promises", async function() {
+        const results = await asyncPool(2, [10, 50, 30, 20], x => x);
+        expect(results).to.deep.equal([10, 50, 30, 20]);
       });
 
       it("rejects as soon as first promise rejects", async function() {
