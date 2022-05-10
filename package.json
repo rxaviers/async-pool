@@ -1,6 +1,6 @@
 {
   "name": "tiny-async-pool",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Run multiple promise-returning & async functions with limited concurrency using native ES9",
   "main": "lib/es9.js",
   "files": [
