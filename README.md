@@ -1,5 +1,15 @@
 # asyncPool
 
+> **Note:** Since **Node.js v24**, streams ship with a built-in way to process items with limited concurrency.
+>
+> ```js
+> Readable
+>   .from(iterator)
+>   .map(async item => await item.doSomething(), { concurrency: 4 });
+> ```
+>
+> Prefer this API over installing `tiny-async-pool` if you can use Node v24 or newer. See the [Stream documentation](https://nodejs.org/api/stream.html#readablemapfn-options) for details.
+
 ## Why?
 
 The goal of this library is to use native async iterator (ES9), native async functions and native Promise to implement the concurrency behavior (look our source code).
